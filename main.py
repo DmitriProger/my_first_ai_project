@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import Body, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from db import Base, add_request_data, engine, get_user_requests
 from gemini_client import get_answer_from_gemeni
@@ -14,6 +15,13 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan, title="ValoriumGPT")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/requests")
