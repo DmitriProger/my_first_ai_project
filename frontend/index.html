@@ -27,8 +27,128 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       height: 100dvh;
       display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand {
+      padding: 20px 16px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-brand .logo {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand h2 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .sidebar-actions {
+      padding: 12px;
+    }
+
+    #new-chat-btn {
+      width: 100%;
+      padding: 9px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    #new-chat-btn:hover { background: var(--accent-dim); }
+
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 8px 8px;
+    }
+
+    .chat-list::-webkit-scrollbar { width: 4px; }
+    .chat-list::-webkit-scrollbar-track { background: transparent; }
+    .chat-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .chat-item {
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: background 0.1s, color 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+
+    .chat-item:hover {
+      background: rgba(108, 99, 255, 0.1);
+      color: var(--text);
+    }
+
+    .chat-item.active {
+      background: rgba(108, 99, 255, 0.15);
+      color: var(--text);
+    }
+
+    .chat-item-title {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chat-item svg { flex-shrink: 0; opacity: 0.6; }
+    .chat-item.active svg { opacity: 1; }
+
+    .chat-list-empty {
+      padding: 16px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
       flex-direction: column;
       align-items: center;
+      overflow: hidden;
     }
 
     header {
@@ -41,32 +161,25 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .logo {
-      width: 36px;
-      height: 36px;
-      background: var(--accent);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
     header h1 {
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.3px;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     header span {
-      margin-left: auto;
       font-size: 12px;
       color: var(--text-muted);
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid var(--border);
       padding: 4px 10px;
       border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     #chat {
@@ -278,41 +391,60 @@
 </head>
 <body>
 
-<header>
-  <div class="logo">✦</div>
-  <h1>ValoriumGPT</h1>
-  <span id="history-badge">загрузка...</span>
-</header>
-
-<div id="chat">
-  <div class="empty-state" id="empty-state">
-    <div class="icon">✦</div>
-    <p>Задай вопрос — отвечу мгновенно</p>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">✦</div>
+    <h2>ValoriumGPT</h2>
   </div>
-</div>
-
-<div id="input-area">
-  <div class="input-wrapper">
-    <textarea
-      id="prompt-input"
-      rows="1"
-      placeholder="Напиши сообщение..."
-    ></textarea>
-    <button id="send-btn" title="Отправить">
-      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
+  <div class="sidebar-actions">
+    <button id="new-chat-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Новый чат
     </button>
   </div>
-  <p class="hint">Enter — отправить &nbsp;·&nbsp; Shift+Enter — новая строка</p>
+  <div class="chat-list" id="chat-list"></div>
+</aside>
+
+<div class="main">
+  <header>
+    <h1 id="chat-title">ValoriumGPT</h1>
+    <span id="history-badge">загрузка...</span>
+  </header>
+
+  <div id="chat">
+    <div class="empty-state" id="empty-state">
+      <div class="icon">✦</div>
+      <p>Задай вопрос — отвечу мгновенно</p>
+    </div>
+  </div>
+
+  <div id="input-area">
+    <div class="input-wrapper">
+      <textarea
+        id="prompt-input"
+        rows="1"
+        placeholder="Напиши сообщение..."
+      ></textarea>
+      <button id="send-btn" title="Отправить">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <p class="hint">Enter — отправить &nbsp;·&nbsp; Shift+Enter — новая строка</p>
+  </div>
 </div>
 
 <script>
   const API = 'http://localhost:8000';
+  let currentChatId = null;
 
-  const chat = document.getElementById('chat');
+  const chatEl = document.getElementById('chat');
   const input = document.getElementById('prompt-input');
   const sendBtn = document.getElementById('send-btn');
-  const emptyState = document.getElementById('empty-state');
   const historyBadge = document.getElementById('history-badge');
+  const chatTitleEl = document.getElementById('chat-title');
+  const chatListEl = document.getElementById('chat-list');
 
   // Auto-grow textarea
   input.addEventListener('input', () => {
@@ -329,9 +461,23 @@
   });
 
   sendBtn.addEventListener('click', sendMessage);
+  document.getElementById('new-chat-btn').addEventListener('click', createNewChat);
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function clearChatArea() {
+    chatEl.innerHTML = `
+      <div class="empty-state" id="empty-state">
+        <div class="icon">✦</div>
+        <p>Задай вопрос — отвечу мгновенно</p>
+      </div>`;
+  }
 
   function addMessage(role, text) {
-    emptyState.remove();
+    const emptyState = document.getElementById('empty-state');
+    if (emptyState) emptyState.remove();
 
     const wrapper = document.createElement('div');
     wrapper.className = `message ${role}`;
@@ -350,8 +496,8 @@
 
     wrapper.appendChild(label);
     wrapper.appendChild(bubble);
-    chat.appendChild(wrapper);
-    chat.scrollTop = chat.scrollHeight;
+    chatEl.appendChild(wrapper);
+    chatEl.scrollTop = chatEl.scrollHeight;
     return wrapper;
   }
 
@@ -359,8 +505,8 @@
     const indicator = document.createElement('div');
     indicator.className = 'typing-indicator';
     indicator.innerHTML = '<span></span><span></span><span></span>';
-    chat.appendChild(indicator);
-    chat.scrollTop = chat.scrollHeight;
+    chatEl.appendChild(indicator);
+    chatEl.scrollTop = chatEl.scrollHeight;
     return indicator;
   }
 
@@ -369,9 +515,105 @@
     input.disabled = on;
   }
 
+  // ── CHAT LIST ──
+
+  async function loadChats() {
+    try {
+      const res = await fetch(`${API}/chats`);
+      if (!res.ok) { historyBadge.textContent = 'бекенд недоступен'; return; }
+      const chats = await res.json();
+      renderChatList(chats);
+      if (chats.length > 0) {
+        await switchToChat(chats[0].id, chats[0].title);
+      } else {
+        historyBadge.textContent = '0 сообщений';
+      }
+    } catch {
+      historyBadge.textContent = 'бекенд недоступен';
+    }
+  }
+
+  function renderChatList(chats) {
+    chatListEl.innerHTML = '';
+    if (chats.length === 0) {
+      chatListEl.innerHTML = '<div class="chat-list-empty">Нет чатов</div>';
+      return;
+    }
+    chats.forEach(chat => {
+      const item = document.createElement('div');
+      item.className = 'chat-item' + (chat.id === currentChatId ? ' active' : '');
+      item.dataset.chatId = chat.id;
+      item.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span class="chat-item-title">${escapeHtml(chat.title)}</span>`;
+      item.addEventListener('click', () => switchToChat(chat.id, chat.title));
+      chatListEl.appendChild(item);
+    });
+  }
+
+  async function switchToChat(chatId, title) {
+    currentChatId = chatId;
+    chatTitleEl.textContent = title;
+
+    document.querySelectorAll('.chat-item').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.chatId) === chatId);
+    });
+
+    clearChatArea();
+
+    try {
+      const res = await fetch(`${API}/chats/${chatId}/requests`);
+      if (!res.ok) return;
+      const messages = await res.json();
+      if (messages.length > 0) {
+        messages.forEach(m => {
+          addMessage('user', m.prompt);
+          addMessage('ai', m.response);
+        });
+      }
+      historyBadge.textContent = `${messages.length} сообщений`;
+    } catch {
+      // silently fail
+    }
+  }
+
+  async function createNewChat() {
+    try {
+      const res = await fetch(`${API}/chats`, { method: 'POST' });
+      if (!res.ok) return;
+      const chat = await res.json();
+
+      const chatsRes = await fetch(`${API}/chats`);
+      const chats = await chatsRes.json();
+      renderChatList(chats);
+
+      await switchToChat(chat.id, chat.title);
+      input.focus();
+    } catch (err) {
+      console.error('Ошибка создания чата:', err);
+    }
+  }
+
+  // ── MESSAGING ──
+
   async function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
+
+    // Auto-create a chat if none is active
+    if (!currentChatId) {
+      try {
+        const res = await fetch(`${API}/chats`, { method: 'POST' });
+        if (!res.ok) return;
+        const chat = await res.json();
+        currentChatId = chat.id;
+        const chatsRes = await fetch(`${API}/chats`);
+        renderChatList(await chatsRes.json());
+        chatTitleEl.textContent = chat.title;
+      } catch { return; }
+    }
 
     addMessage('user', text);
     input.value = '';
@@ -384,7 +626,7 @@
       const res = await fetch(`${API}/requests`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: text }),
+        body: JSON.stringify({ prompt: text, chat_id: currentChatId }),
       });
 
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
@@ -392,7 +634,18 @@
       const data = await res.json();
       typing.remove();
       addMessage('ai', data.answer);
-      updateHistoryBadge();
+
+      // Update chat title in sidebar if it was set from first message
+      if (data.chat_title) {
+        chatTitleEl.textContent = data.chat_title;
+        const item = chatListEl.querySelector(`[data-chat-id="${currentChatId}"]`);
+        if (item) {
+          const titleEl = item.querySelector('.chat-item-title');
+          if (titleEl) titleEl.textContent = data.chat_title;
+        }
+      }
+
+      historyBadge.textContent = `${chatEl.querySelectorAll('.message.user').length} сообщений`;
     } catch (err) {
       typing.remove();
       addMessage('ai', `Не удалось получить ответ: ${err.message}`);
@@ -402,38 +655,7 @@
     }
   }
 
-  async function loadHistory() {
-    try {
-      const res = await fetch(`${API}/requests`);
-      if (!res.ok) return;
-      const history = await res.json();
-
-      if (history.length > 0) {
-        emptyState.remove();
-        history.forEach(item => {
-          addMessage('user', item.prompt);
-          addMessage('ai', item.response);
-        });
-      }
-
-      updateHistoryBadge(history.length);
-    } catch {
-      historyBadge.textContent = 'бекенд недоступен';
-    }
-  }
-
-  function updateHistoryBadge(count) {
-    if (count === undefined) {
-      fetch(`${API}/requests`)
-        .then(r => r.json())
-        .then(h => { historyBadge.textContent = `${h.length} запросов`; })
-        .catch(() => {});
-    } else {
-      historyBadge.textContent = `${count} запросов`;
-    }
-  }
-
-  loadHistory();
+  loadChats();
 </script>
 </body>
 </html>
