@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ValoriumGPT</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -118,7 +119,6 @@
       border-radius: var(--radius);
       font-size: 14px;
       line-height: 1.6;
-      white-space: pre-wrap;
       word-break: break-word;
     }
 
@@ -132,6 +132,51 @@
       border: 1px solid var(--border);
       border-bottom-left-radius: 4px;
     }
+
+    /* Markdown styles */
+    .message.ai .bubble p { margin-bottom: 8px; }
+    .message.ai .bubble p:last-child { margin-bottom: 0; }
+    .message.ai .bubble h1,
+    .message.ai .bubble h2,
+    .message.ai .bubble h3 { margin: 14px 0 6px; font-weight: 700; }
+    .message.ai .bubble h1 { font-size: 18px; }
+    .message.ai .bubble h2 { font-size: 16px; }
+    .message.ai .bubble h3 { font-size: 14px; }
+    .message.ai .bubble ul,
+    .message.ai .bubble ol { padding-left: 20px; margin-bottom: 8px; }
+    .message.ai .bubble li { margin-bottom: 4px; }
+    .message.ai .bubble code {
+      background: #0f1117;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: 'Menlo', 'Monaco', monospace;
+      font-size: 12px;
+    }
+    .message.ai .bubble pre {
+      background: #0f1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+    .message.ai .bubble pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 13px;
+    }
+    .message.ai .bubble blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      color: var(--text-muted);
+      margin: 8px 0;
+    }
+    .message.ai .bubble strong { font-weight: 700; }
+    .message.ai .bubble em { font-style: italic; }
+    .message.ai .bubble a { color: var(--accent); text-decoration: underline; }
+    .message.ai .bubble hr { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
 
     .message-label {
       font-size: 11px;
@@ -297,7 +342,11 @@
 
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.textContent = text;
+    if (role === 'ai') {
+      bubble.innerHTML = marked.parse(text);
+    } else {
+      bubble.textContent = text;
+    }
 
     wrapper.appendChild(label);
     wrapper.appendChild(bubble);
