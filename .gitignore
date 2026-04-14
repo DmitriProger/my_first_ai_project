@@ -14,3 +14,4 @@ wheels/
 config.py
 uv.lock
 requests.db
+.DS_Store
